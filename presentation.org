@@ -92,7 +92,62 @@
   : 120
 
 * Вариант задачи для рекурсии
-  Попробуйте реализовать решение __[[https://gist.github.com/pimiento/201225ad1a70432060531676dd3e6239][этой задачи]]__ без использования рекурсии \Winkey[][green!60!white]
+  #+BEGIN_SRC python :exports none :tangle "count_change.py" :shebang "#!/usr/bin/env python3"
+    """
+    Число способов разменять сумму A с помощью N типов монет равняется
+
+    • числу способов разменять сумму A с помощью всех типов монет, кроме первого,
+      плюс
+    • число способов разменять сумму A − D с использованием всех N типов монет,
+      где D достоинство монет первого типа.
+
+    • Если A в точности равно 0, мы считаем, что имеем 1 способ размена.
+    • Если A меньше 0, мы считаем, что имеем 0 способов размена.
+    • Если N равно 0, мы считаем, что имеем 0 способов размена
+
+    Пример: 10 центов монетами 1 и 5
+
+    10/{1} + 5/{1, 5}
+    10/{} + 9/{1} + 5/{1} + 0/{1, 5}
+    0 + 9/{} + 8/{1} + 5/{} + 4/{1} + 1
+    0 + 0 + 8/{} + 8/{1} + 0 + 4/{} + 3/{1} + 1
+    0 + 0 + 0 + 8/{} + 7/{1} + 0 + 0 + 3/{} + 2/{1} + 1
+    0 + 0 + 0 + 0 + 7/{} + 6/{1} + 0 + 0 + 0 + 2/{} + 1/{1} + 1
+    0 + 0 + 0 + 0 + 0 + 6/{} + 5/{1} + 0 + 0 + 0 + 0 + 1/{} + 0/{1} + 1
+    0 + 0 + 0 + 0 + 0 + 0 + 5/{} + 4/{1} + 0 + 0 + 0 + 0  + 0 + 1 + 1
+    ...
+    => 3
+    """
+
+    def first_denomination(kinds_of_coins):
+        return {
+            1: 1,
+            2: 5,
+            3: 10,
+            4: 25,
+            5: 50
+        }[kinds_of_coins]
+
+
+    def cc(amount, kinds_of_coins):
+        # base case
+        if amount == 0:
+            return 1
+        if amount < 0 or kinds_of_coins == 0:
+            return 0
+        return (
+            cc(amount, kinds_of_coins - 1) +
+            cc(amount - first_denomination(kinds_of_coins), kinds_of_coins)
+        )
+
+
+    def count_change(amount):
+        return cc(amount, 5)
+
+
+    count_change(100)
+  #+END_SRC
+  Попробуйте реализовать решение __[[https://github.com/pimiento/recursion_webinar/blob/master/count_change.py][этой задачи]]__ без использования рекурсии \Winkey[][green!60!white]
 * Хвостовая рекурсия
   Рекурсия, не требующая действий с возвращённым результатом из шага рекурсии.
   #+BEGIN_SRC python :exports both :results output
@@ -112,7 +167,47 @@
   - __[[https://neopythonic.blogspot.com/2009/04/final-words-on-tail-calls.html][Почему TCO нет и не будет в Python]]__
 * Пример когда рекурсия помогает
   - Задача :: У вас есть вложенная структура данных и вы хотите просуммировать значения поля X во всех объектах этой структуры.
-  - Решение задачи :: https://gist.github.com/pimiento/bc4d5800f66541cb59ea388c1c3c263c
+  - Решение задачи :: https://github.com/pimiento/recursion_webinar/blob/master/recursion_example.py
+  #+BEGIN_SRC python :exports none :tangle "recursion_example.py" :shebang "#!/usr/bin/env python3"
+    company = {
+        "sales": [
+            {
+                "name": "Alice",
+                "salary": 10000
+            },
+            {
+                "name": "Bob",
+                "salary": 8950
+            }
+        ],
+        "development": {
+            "frontend": [
+                {
+                    "name": "Peter",
+                    "salary": 6500
+                },
+                {
+                    "name": "Alex",
+                    "salary": 8300
+                }
+            ],
+            "backend": [{
+                "name": "Pavel",
+                "salary": 7100
+            }]
+        }
+    }
+
+
+    def sum_salaries(department):
+        # base case
+        if isinstance(department, list):
+            return sum(person["salary"] for person in department)
+        return sum(sum_salaries(dep) for dep in department.values())
+
+
+    sum_salaries(company)
+  #+END_SRC
 * Дополнительная литература
   - [[https://mitpress.mit.edu/sites/default/files/sicp/full-text/book/book.html][SICP]]
 * Динамическое программирование

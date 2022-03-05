@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-fname="levenstein_recursive.gif"
+fname="levenshtein_recursive.gif"
 from visualiser.visualiser import Visualiser as vs
 
 @vs(node_properties_kwargs={
