@@ -1,0 +1,346 @@
+#+TITLE: Рекурсия. Динамическое программирование. Строковые алгоритмы.
+#+EMAIL: @pvavilin
+#+AUTHOR: @pvavilin
+#+INFOJS_OPT: view:nil toc:nil ltoc:t mouse:underline buttons:0 path:https://orgmode.org/org-info.js
+#+startup: beamer
+#+LaTeX_CLASS: beamer
+#+LaTeX_CLASS_OPTIONS: [smallest]
+#+LATEX_HEADER: \usetheme{default}
+#+LATEX_HEADER: \usecolortheme{crane}
+#+LATEX_HEADER: \usepackage{tikzsymbols}
+#+LATEX_HEADER: \RequirePackage{fancyvrb}
+#+LATEX_HEADER: \DefineVerbatimEnvironment{verbatim}{Verbatim}{fontsize=\scriptsize}
+#+LaTeX_HEADER: \lstset{basicstyle=\scriptsize\ttfamily}
+#+OPTIONS: \n:t ^:nil
+* Что такое рекурсия?
+  Приём в программировании, когда задача может быть разделена на несколько таких же, но проще, задач.
+  #+BEGIN_SRC python :exports code
+    def pow(x, n):
+        # возведение числа в степень это
+        # умножение числа на число
+        # в степени n-1
+        if n == 0:
+            return 1
+        return x * pow(x, n-1)
+  #+END_SRC
+* Правильная рекурсия
+  #+BEGIN_SRC python :exports code
+    def pow(x, n):
+        # хорошо бы проверить,
+        # что база достижима
+        assert n >= 0
+        # base case / база рекурсии
+        if n == 0:
+            return 1
+        # recursive case / шаг рекурсии
+        return x * pow(x, n-1)
+  #+END_SRC
+* Что такое стек вызовов?
+  #+BEGIN_SRC python :exports code
+    def foo(msg):
+        print '{} foo'.format(msg)
+
+    def main():
+        msg = 'hello'
+        foo(msg)
+
+    if __name__ == '__main__':
+        main()
+  #+END_SRC
+* Что такое стек вызовов?
+  [[file:///home/pimiento/yap/callstack.png]]
+* Почему рекурсия это плохо
+  - стек вызовов растёт вместе с ростом глубины рекурсии
+  - можно попасть в бесконечную рекурсию и истратить всю память на стек вызовов
+
+* Recursion depth
+  #+BEGIN_SRC python :exports code
+    def inf_counter(x):
+        print(x)
+        return inf_counter(x+1)
+    f(0)
+  #+END_SRC
+
+* Глубина рекурсии
+  #+BEGIN_SRC python :exports both :results output
+    import sys
+
+    print(sys.getrecursionlimit())
+    sys.setrecursionlimit(
+        sys.getrecursionlimit() + 234
+    )
+    print(sys.getrecursionlimit())
+  #+END_SRC
+
+  #+RESULTS:
+  : 1000
+  : 1234
+
+* Почему рекурсия это хорошо
+  Помогает описать решение задачи понятным языком
+  #+BEGIN_SRC python :exports both :results output
+    # n! = n * (n-1)
+    def factorial(n):
+        if n == 0:
+            return 1
+        return n * factorial(n-1)
+
+    print(factorial(5))
+  #+END_SRC
+
+  #+RESULTS:
+  : 120
+
+* Вариант задачи для рекурсии
+  Попробуйте реализовать решение __[[https://gist.github.com/pimiento/201225ad1a70432060531676dd3e6239][этой задачи]]__ без использования рекурсии \Winkey[][green!60!white]
+* Хвостовая рекурсия
+  Рекурсия, не требующая действий с возвращённым результатом из шага рекурсии.
+  #+BEGIN_SRC python :exports both :results output
+    def factorial(n, collected=1):
+        if n == 0:
+            return collected
+        return factorial(n-1, collected*n)
+
+    print(factorial(5))
+  #+END_SRC
+
+  #+RESULTS:
+  : 120
+
+* Оптимизация хвостовой рекурсии и почему её нет в Python
+  - Интерпретаторы/компиляторы могут оптимизировать хвостовую рекурсию (Tail Call Optimization) и не делать записей в стек вызовов, а подменять переменные в стеке вызовов, таким образом код получится равнозначным обычному циклу
+  - __[[https://neopythonic.blogspot.com/2009/04/final-words-on-tail-calls.html][Почему TCO нет и не будет в Python]]__
+* Пример когда рекурсия помогает
+  - Задача :: У вас есть вложенная структура данных и вы хотите просуммировать значения поля X во всех объектах этой структуры.
+  - Решение задачи :: https://gist.github.com/pimiento/bc4d5800f66541cb59ea388c1c3c263c
+* Дополнительная литература
+  - [[https://mitpress.mit.edu/sites/default/files/sicp/full-text/book/book.html][SICP]]
+* Динамическое программирование
+  #+NAME: visualiser
+  #+BEGIN_SRC python :exports none
+    from visualiser.visualiser import Visualiser as vs
+
+    @vs(node_properties_kwargs={
+        "shape": "record",
+        "color": "#f57542",
+        "style": "filled",
+        "fillcolor": "grey"
+    })
+  #+END_SRC
+  #+NAME: output
+  #+BEGIN_SRC python :exports none
+    def main():
+        import io
+        import sys
+        trap = io.StringIO()
+        sys.stdout = trap
+        fib(n=5)
+        vs.make_animation(fname.split(".")[0] + ".gif", delay=1)
+        sys.stdout = sys.__stdout__
+        print(fname, end='')
+
+
+    if __name__ == "__main__":
+        main()
+  #+END_SRC
+  #+BEGIN_SRC python :exports both :results output file :noweb strip-export :tangle "recursion_fibonacci.py" :shebang "#!/usr/bin/env python3" :var fname="fibonacci.png"
+    <<visualiser>>
+    def fib(n):
+        if n == 0:
+            return 1
+        if n == 1:
+            return 1
+        return fib(n=n-1) + fib(n=n-2)
+    <<output>>
+  #+END_SRC
+
+  #+ATTR_LATEX: :width .45\textwidth
+  #+RESULTS:
+  [[file:fibonacci.png]]
+
+* Кэширование
+  #+BEGIN_SRC python :exports both :results output file :noweb strip-export :tangle "cached_fibonacci.py" :shebang "#!/usr/bin/env python3" :var fname="cached_fibonacci.png"
+    cache = {0: 1, 1: 1}
+    <<visualiser>>
+    def fib(n):
+        if n not in cache:
+            cache[n] = \
+                fib(n=n-1) + fib(n=n-2)
+        return cache[n]
+    <<output>>
+  #+END_SRC
+
+  #+ATTR_LATEX: :width .25\textwidth
+  #+RESULTS:
+  [[file:cached_fibonacci.png]]
+
+
+* Поиск приблизительно совпадающих строк
+  Возможные действия над строками, каждое действие будет иметь стоимость $1$
+  - /замена/ :: заменить один символ в строку A1 на символ из строки A2. ("мама" → "рама")
+  - /вставка/ :: вставить один символ в строку A1 так чтобы она совпала с подстрокой A2. ("роза" → "проза")
+  - /удаление/ :: удалить один символ в строке A1 так чтобы она совпала с подстрокой A2. ("гроза" → "роза")
+
+* Рекурсивное решение
+  #+BEGIN_SRC python :exports both :results output list
+    def lev(a: str, b: str) -> int:
+        if not a: return len(b)
+        if not b: return len(a)
+        return min([
+            lev(a[1:],b[1:])+(a[0]!=b[0]),
+            lev(a[1:],b)+1,
+            lev(a,b[1:])+1
+        ])
+
+    print(lev("salt", "foobar"))
+    print(lev("halt", "salt"))
+  #+END_SRC
+
+  #+RESULTS:
+  : - 6
+  : - 1
+  #+BEGIN_SRC python :exports none :noweb strip-export :tangle "levenshtein_recursive.py" :shebang "#!/usr/bin/env python3" :var fname="levenshtein_recursive.gif"
+    <<visualiser>>
+    def lev(a: str, b: str) -> int:
+        if not a: return len(b)
+        if not b: return len(a)
+        return min([
+            lev(a[1:],b[1:])+(a[0]!=b[0]),
+            lev(a[1:],b)+1,
+            lev(a,b[1:])+1
+        ])
+
+    def main():
+        import io
+        import sys
+        lev("foo", "bar")
+        vs.make_animation(fname.split(".")[0] + ".gif", delay=1)
+        print(fname, end='')
+
+
+    if __name__ == "__main__":
+        main()
+  #+END_SRC
+
+* Динамическое программирование в действии
+  #+BEGIN_SRC python :exports both :results output list
+    def levenshtein(a: str, b: str, m: List[List[int]]) -> int:
+        for i in range(1, len(a)):
+            for j in range(1, len(b)):
+                m[i][j] = min(
+                    m[i-1][j-1] + (a[i] != b[j]),
+                    m[i][j-1] + 1,
+                    m[i-1][j] + 1
+                )
+        return m[len(a)-1][len(b)-1]
+  #+END_SRC
+  #+BEGIN_SRC python :exports none :tangle "levenshtein_dynamic.py" :shebang "#!/usr/bin/env python3" :noweb strip-export
+    from typing import List, Tuple
+
+
+    MATCH, INSERT, DELETE = [0, 1, 2]
+
+
+    def row_init(j, m):
+        # m[0][j] = {"cost": j, "parent": -1}
+        m[0][j] = {
+            "cost": j,
+            "parent": INSERT if j > 0 else -1
+        }
+
+    def col_init(i, m):
+        # m[i][0] = {"cost": i, "parent": -1}
+        m[i][0] = {
+            "cost": i,
+            "parent": DELETE if i > 0 else -1
+        }
+
+    def match(a: str, b: str) -> int:
+        return (a != b)
+
+
+    def cost(c: str) -> int:
+        return 1
+
+
+    def goal_cell(a: str, b: str, i: int, j: int, m: List[List[dict]]) -> Tuple[int, int]:
+        # for k in range(len(b)-1):
+        #     if m[i][k]["cost"] < m[i][j]["cost"]:
+        #         j = k
+        # return i, j
+        i = len(a)-1
+        j = len(b)-1
+        return i, j
+
+
+    def levenshtein(a: str, b: str, m: List[List[dict]]) -> int:
+        for i in range(1, len(a)):
+            for j in range(1, len(b)):
+                if m[i][j] is None:
+                    m[i][j] = {"parent": -1}
+                match_insert_delete = [
+                    m[i-1][j-1]["cost"] + match(a[i], b[j]),
+                    m[i][j-1]["cost"] + cost(''),
+                    m[i-1][j]["cost"] + cost('')
+                ]
+                m[i][j]["cost"] = min(match_insert_delete)
+                m[i][j]["parent"] = match_insert_delete.index(m[i][j]["cost"])
+        i, j = goal_cell(a, b, i, j, m)
+        return m[i][j]["cost"]
+
+
+    def lev(a: str, b: str) -> Tuple[int, List[List[dict]]]:
+        a = " " + a
+        b = " " + b
+        m = [[None] * (len(b)) for i in range(len(a))]
+
+        for i in range(len(a)):
+            col_init(i,m)
+        for j in range(len(b)):
+            row_init(j, m)
+
+        return levenshtein(a, b, m), m
+
+    def insert_out(b: str, j: int) -> None:
+        print(f"I: {b[j]}")
+
+    def delete_out(a: str, i: int) -> None:
+        print(f"D: {a[i]}")
+
+    def match_out(a: str, b: str, i: int, j: int) -> None:
+        if a[i] == b[j]:
+            print(f"M: {a[i]}")
+        else:
+            print(f"S: {a[i]} -> {b[j]}")
+
+    def reconstruct_path(a: str, b: str, i: int, j: int, m: List[List[dict]]) -> None:
+        parent = m[i][j]["parent"]
+        # print(f"i: {i}\tj: {j}\tparent: {parent}")
+        if parent == MATCH:
+            reconstruct_path(a, b, i-1, j-1, m)
+            match_out(a, b, i-1, j-1)
+        elif parent == INSERT:
+            reconstruct_path(a, b, i, j-1, m)
+            insert_out(b, j-1)
+        elif parent == DELETE:
+            reconstruct_path(a, b, i-1, j, m)
+            delete_out(a, i-1)
+        else:
+            return
+
+    b = "ура"
+    a = "культура"
+    result, m = lev(a, b)
+    print(result)
+    print("----------------------")
+    for row in m:
+        print(' '.join(f"{cell['cost']:2d}" for cell in row))
+    print("--cost--^--parent--v--")
+    for row in m:
+        print(' '.join(f"{cell['parent']:2d}" for cell in row))
+    print("----------------------")
+    reconstruct_path(a, b, len(a), len(b), m)
+  #+END_SRC
+* Вопросы-ответы
+  #+ATTR_LATEX: :width .6\textwidth
+  [[file:questions.jpg]]
