@@ -1,28 +1,28 @@
-- [Что такое рекурсия?](#org4d61b66)
-- [Правильная рекурсия](#org82e6859)
-- [Что такое стек вызовов?](#orge75f0ca)
-- [Что такое стек вызовов?](#org98fb3b0)
-- [Почему рекурсия это плохо](#org428c926)
-- [Recursion depth](#orgac68dea)
-- [Глубина рекурсии](#orgb97da7b)
-- [Почему рекурсия это хорошо](#org8ff1543)
-- [Вариант задачи для рекурсии](#org9726a78)
-- [решение на LISP](#org0dbb7c0)
-- [трассирование](#org25a06d8)
-- [Хвостовая рекурсия](#org21ab8b9)
-- [Оптимизация хвостовой рекурсии и почему её нет в Python](#org940dc01)
-- [Пример когда рекурсия помогает](#orgabb739d)
-- [Динамическое программирование](#org4c069f8)
-- [Кэширование](#orgba54923)
-- [Поиск приблизительно совпадающих строк](#orgf604a3f)
-- [Рекурсивное решение](#org9ed64d1)
-- [Динамическое программирование в действии](#org55c254a)
-- [Дополнительная литература](#org1f63359)
-- [Вопросы-ответы](#orgee24d59)
+- [Что такое рекурсия?](#org6d25bf6)
+- [Правильная рекурсия](#orge26fd72)
+- [Что такое стек вызовов?](#orgbf61030)
+- [Что такое стек вызовов?](#org0708316)
+- [Почему рекурсия это плохо](#org908873b)
+- [Recursion depth](#orgce9c267)
+- [Глубина рекурсии](#orge71a9ff)
+- [Почему рекурсия это хорошо](#org9631d6e)
+- [Вариант задачи для рекурсии](#orgd5a89ec)
+- [решение на LISP](#org314c90e)
+- [трассирование](#org6fefa6a)
+- [Хвостовая рекурсия](#org22a05b5)
+- [Оптимизация хвостовой рекурсии и почему её нет в Python](#org18f7493)
+- [Пример когда рекурсия помогает](#org6bd0b9a)
+- [Динамическое программирование](#orgcb5d5f3)
+- [Кэширование](#org0a276ac)
+- [Поиск приблизительно совпадающих строк](#org4e01ad9)
+- [Рекурсивное решение](#org7141a28)
+- [Динамическое программирование в действии](#org664a1c9)
+- [Дополнительная литература](#org173fde4)
+- [Вопросы-ответы](#orgf396ae6)
 
 
 
-<a id="org4d61b66"></a>
+<a id="org6d25bf6"></a>
 
 # Что такое рекурсия?
 
@@ -39,7 +39,7 @@ def pow(x, n):
 ```
 
 
-<a id="org82e6859"></a>
+<a id="orge26fd72"></a>
 
 # Правильная рекурсия
 
@@ -56,7 +56,7 @@ def pow(x, n):
 ```
 
 
-<a id="orge75f0ca"></a>
+<a id="orgbf61030"></a>
 
 # Что такое стек вызовов?
 
@@ -73,14 +73,14 @@ if __name__ == '__main__':
 ```
 
 
-<a id="org98fb3b0"></a>
+<a id="org0708316"></a>
 
 # Что такое стек вызовов?
 
 ![img](/home/pimiento/yap/callstack.png)  
 
 
-<a id="org428c926"></a>
+<a id="org908873b"></a>
 
 # Почему рекурсия это плохо
 
@@ -88,7 +88,7 @@ if __name__ == '__main__':
 -   можно попасть в бесконечную рекурсию и истратить всю память на стек вызовов
 
 
-<a id="orgac68dea"></a>
+<a id="orgce9c267"></a>
 
 # Recursion depth
 
@@ -96,11 +96,11 @@ if __name__ == '__main__':
 def inf_counter(x):
     print(x)
     return inf_counter(x+1)
-f(0)
+inf_counter(0)
 ```
 
 
-<a id="orgb97da7b"></a>
+<a id="orge71a9ff"></a>
 
 # Глубина рекурсии
 
@@ -118,7 +118,7 @@ print(sys.getrecursionlimit())
     1234
 
 
-<a id="org8ff1543"></a>
+<a id="org9631d6e"></a>
 
 # Почему рекурсия это хорошо
 
@@ -137,14 +137,14 @@ print(factorial(5))
     120
 
 
-<a id="org9726a78"></a>
+<a id="orgd5a89ec"></a>
 
 # Вариант задачи для рекурсии
 
-Попробуйте реализовать решение <span class="underline"><span class="underline">[этой задачи](https://github.com/pimiento/recursion_webinar/blob/master/count_change.py)</span></span> без использования рекурсии \Winkey[][green!60!white]  
+Попробуйте реализовать решение <span class="underline"><span class="underline">[этой задачи](https://github.com/pimiento/recursion_webinar/blob/master/cc.py)</span></span> без использования рекурсии \Winkey[][green!60!white]  
 
 
-<a id="org0dbb7c0"></a>
+<a id="org314c90e"></a>
 
 # решение на LISP
 
@@ -153,7 +153,7 @@ print(factorial(5))
 ![img](count-change-lisp.png)  
 
 
-<a id="org25a06d8"></a>
+<a id="org6fefa6a"></a>
 
 # трассирование
 
@@ -177,7 +177,7 @@ count_change(10)
 ```
 
 
-<a id="org21ab8b9"></a>
+<a id="org22a05b5"></a>
 
 # Хвостовая рекурсия
 
@@ -195,7 +195,7 @@ print(factorial(5))
     120
 
 
-<a id="org940dc01"></a>
+<a id="org18f7493"></a>
 
 # Оптимизация хвостовой рекурсии и почему её нет в Python
 
@@ -203,7 +203,7 @@ print(factorial(5))
 -   <span class="underline"><span class="underline">[Почему TCO нет и не будет в Python](https://neopythonic.blogspot.com/2009/04/final-words-on-tail-calls.html)</span></span>
 
 
-<a id="orgabb739d"></a>
+<a id="org6bd0b9a"></a>
 
 # Пример когда рекурсия помогает
 
@@ -211,7 +211,7 @@ print(factorial(5))
 -   **Решение задачи:** <https://github.com/pimiento/recursion_webinar/blob/master/recursion_example.py>
 
 
-<a id="org4c069f8"></a>
+<a id="orgcb5d5f3"></a>
 
 # Динамическое программирование
 
@@ -229,7 +229,7 @@ def fib(n):
 ![img](fibonacci.png)  
 
 
-<a id="orgba54923"></a>
+<a id="org0a276ac"></a>
 
 # Кэширование
 
@@ -247,7 +247,7 @@ def fib(n):
 ![img](cached_fibonacci.png)  
 
 
-<a id="orgf604a3f"></a>
+<a id="org4e01ad9"></a>
 
 # Поиск приблизительно совпадающих строк
 
@@ -258,7 +258,7 @@ def fib(n):
 -   ***удаление*:** удалить один символ в строке A1 так чтобы она совпала с подстрокой A2. ("гроза" → "роза")
 
 
-<a id="org9ed64d1"></a>
+<a id="org7141a28"></a>
 
 # Рекурсивное решение
 
@@ -268,8 +268,8 @@ def lev(a: str, b: str) -> int:
     if not b: return len(a)
     return min([
         lev(a[1:],b[1:])+(a[0]!=b[0]),
-        lev(a[1:],b)+1,
-        lev(a,b[1:])+1
+        lev(a,b[1:])+1,
+        lev(a[1:],b)+1
     ])
 
 print(lev("salt", "foobar"))
@@ -280,7 +280,7 @@ print(lev("halt", "salt"))
     - 1
 
 
-<a id="org55c254a"></a>
+<a id="org664a1c9"></a>
 
 # Динамическое программирование в действии
 
@@ -299,14 +299,14 @@ def levenshtein(
 ```
 
 
-<a id="org1f63359"></a>
+<a id="org173fde4"></a>
 
 # Дополнительная литература
 
 -   [SICP](https://mitpress.mit.edu/sites/default/files/sicp/full-text/book/book.html)
 
 
-<a id="orgee24d59"></a>
+<a id="orgf396ae6"></a>
 
 # Вопросы-ответы
 

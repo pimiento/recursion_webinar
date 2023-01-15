@@ -13,8 +13,8 @@ def lev(a: str, b: str) -> int:
     if not b: return len(a)
     return min([
         lev(a[1:],b[1:])+(a[0]!=b[0]),
-        lev(a[1:],b)+1,
-        lev(a,b[1:])+1
+        lev(a,b[1:])+1,
+        lev(a[1:],b)+1
     ])
 
 def main():

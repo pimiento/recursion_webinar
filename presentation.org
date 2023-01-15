@@ -54,11 +54,11 @@
   - можно попасть в бесконечную рекурсию и истратить всю память на стек вызовов
 
 * Recursion depth
-  #+BEGIN_SRC python :exports code
+  #+BEGIN_SRC python :exports code :tangle inf_counter.py :shebang "#!/usr/bin/env python3"
     def inf_counter(x):
         print(x)
         return inf_counter(x+1)
-    f(0)
+    inf_counter(0)
   #+END_SRC
 
 * Глубина рекурсии
@@ -148,7 +148,7 @@
 
     count_change(100)
   #+END_SRC
-  Попробуйте реализовать решение __[[https://github.com/pimiento/recursion_webinar/blob/master/count_change.py][этой задачи]]__ без использования рекурсии \Winkey[][green!60!white]
+  Попробуйте реализовать решение __[[https://github.com/pimiento/recursion_webinar/blob/master/cc.py][этой задачи]]__ без использования рекурсии \Winkey[][green!60!white]
 * решение на LISP
   __[[https://gist.github.com/pimiento/05e2297358c65e2bf91eb71463747445][count-change.lisp]]__
   #+ATTR_LATEX: :width .8\textwidth
@@ -330,8 +330,8 @@
         if not b: return len(a)
         return min([
             lev(a[1:],b[1:])+(a[0]!=b[0]),
-            lev(a[1:],b)+1,
-            lev(a,b[1:])+1
+            lev(a,b[1:])+1,
+            lev(a[1:],b)+1
         ])
 
     print(lev("salt", "foobar"))
@@ -348,8 +348,8 @@
         if not b: return len(a)
         return min([
             lev(a[1:],b[1:])+(a[0]!=b[0]),
-            lev(a[1:],b)+1,
-            lev(a,b[1:])+1
+            lev(a,b[1:])+1,
+            lev(a[1:],b)+1
         ])
 
     def main():
