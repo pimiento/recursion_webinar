@@ -92,7 +92,8 @@
   : 120
 
 * Вариант задачи для рекурсии
-  #+BEGIN_SRC python :exports none :tangle "count_change.py" :shebang "#!/usr/bin/env python3"
+  #+NAME: python_count_change
+  #+BEGIN_SRC python :exports none
     """
     Число способов разменять сумму A с помощью N типов монет равняется
 
@@ -148,6 +149,55 @@
     count_change(100)
   #+END_SRC
   Попробуйте реализовать решение __[[https://github.com/pimiento/recursion_webinar/blob/master/count_change.py][этой задачи]]__ без использования рекурсии \Winkey[][green!60!white]
+* решение на LISP
+  __[[https://gist.github.com/pimiento/05e2297358c65e2bf91eb71463747445][count-change.lisp]]__
+  #+ATTR_LATEX: :width .8\textwidth
+  [[file:count-change-lisp.png]]
+#+NAME: lisp_count_change
+#+begin_src lisp :exports none :tangle cc.lisp :shebang "#!/usr/bin/sbcl --script"
+  (defun count-change (amount)
+    (cc amount 5))
+  (defun cc (amount kinds-of-coins)
+      (cond ((= amount 0) 1)
+         ((or (< amount 0) (= kinds-of-coins 0)) 0)
+          (t (+ (cc amount
+            (- kinds-of-coins 1))
+              (cc (- amount
+                (first-denomination kinds-of-coins))
+                   kinds-of-coins)))))
+  (defun first-denomination (kinds-of-coins)
+      (cond ((= kinds-of-coins 1) 1)
+            ((= kinds-of-coins 2) 5)
+            ((= kinds-of-coins 3) 10)
+            ((= kinds-of-coins 4) 25)
+            ((= kinds-of-coins 5) 50)))
+  (trace cc)
+  (count-change 100)
+#+end_src
+
+#+RESULTS: lisp_count_change
+: 292
+
+* трассирование
+#+begin_src python :exports code :noweb strip-export :tangle cc.py :shebang "#!/usr/bin/env python3"
+  <<python_count_change>>
+  def trace(f):
+    indent = 0
+    def g(*args, **kwargs):
+      nonlocal indent
+      print('|  ' * indent + '|--',
+            f.__name__, *args, **kwargs)
+      indent += 1
+      value = f(*args, **kwargs)
+      print('|  ' * indent + '|--',
+            'return', repr(value))
+      indent -= 1
+      return value
+    return g
+  cc = trace(cc)
+  count_change(10)
+#+end_src
+
 * Хвостовая рекурсия
   Рекурсия, не требующая действий с возвращённым результатом из шага рекурсии.
   #+BEGIN_SRC python :exports both :results output
@@ -208,8 +258,6 @@
 
     sum_salaries(company)
   #+END_SRC
-* Дополнительная литература
-  - [[https://mitpress.mit.edu/sites/default/files/sicp/full-text/book/book.html][SICP]]
 * Динамическое программирование
   #+NAME: visualiser
   #+BEGIN_SRC python :exports none
@@ -269,7 +317,6 @@
   #+RESULTS:
   [[file:cached_fibonacci.png]]
 
-
 * Поиск приблизительно совпадающих строк
   Возможные действия над строками, каждое действие будет иметь стоимость $1$
   - /замена/ :: заменить один символ в строку A1 на символ из строки A2. ("мама" → "рама")
@@ -319,15 +366,17 @@
 
 * Динамическое программирование в действии
   #+BEGIN_SRC python :exports both :results output list
-    def levenshtein(a: str, b: str, m: List[List[int]]) -> int:
-        for i in range(1, len(a)):
-            for j in range(1, len(b)):
-                m[i][j] = min(
-                    m[i-1][j-1] + (a[i] != b[j]),
-                    m[i][j-1] + 1,
-                    m[i-1][j] + 1
-                )
-        return m[len(a)-1][len(b)-1]
+    def levenshtein(
+        a: str, b: str, m: List[List[int]]
+    ) -> int:
+      for i in range(1, len(a)):
+        for j in range(1, len(b)):
+          m[i][j] = min(
+            m[i-1][j-1] + (a[i] != b[j]),
+            m[i][j-1] + 1,
+            m[i-1][j] + 1
+          )
+      return m[len(a)-1][len(b)-1]
   #+END_SRC
   #+BEGIN_SRC python :exports none :tangle "levenshtein_dynamic.py" :shebang "#!/usr/bin/env python3" :noweb strip-export
     from typing import List, Tuple
@@ -436,6 +485,8 @@
     print("----------------------")
     reconstruct_path(a, b, len(a), len(b), m)
   #+END_SRC
+* Дополнительная литература
+  - [[https://mitpress.mit.edu/sites/default/files/sicp/full-text/book/book.html][SICP]]
 * Вопросы-ответы
   #+ATTR_LATEX: :width .6\textwidth
   [[file:questions.jpg]]

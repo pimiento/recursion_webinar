@@ -52,3 +52,18 @@ def count_change(amount):
 
 
 count_change(100)
+def trace(f):
+  indent = 0
+  def g(*args, **kwargs):
+    nonlocal indent
+    print('|  ' * indent + '|--',
+          f.__name__, *args, **kwargs)
+    indent += 1
+    value = f(*args, **kwargs)
+    print('|  ' * indent + '|--',
+          'return', repr(value))
+    indent -= 1
+    return value
+  return g
+cc = trace(cc)
+count_change(10)
