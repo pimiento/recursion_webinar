@@ -149,6 +149,19 @@
     count_change(100)
   #+END_SRC
   Попробуйте реализовать решение __[[https://github.com/pimiento/recursion_webinar/blob/master/cc.py][этой задачи]]__ без использования рекурсии \Winkey[][green!60!white]
+  #+begin_src python :exports none
+    #!/usr/bin/env python3
+    def count_change(amount):
+        coins = [1, 5, 10, 25, 50]
+        ways = [0 for _ in range(amount + 1)]
+        ways[0] = 1
+        for coin in coins:
+            for i in range(co
+in, amount + 1):
+                ways[i] += ways[i - coin]
+        return ways[amount]
+    print(count_change(723))
+  #+end_src
 * решение на LISP
   __[[https://gist.github.com/pimiento/05e2297358c65e2bf91eb71463747445][count-change.lisp]]__
   #+ATTR_LATEX: :width .8\textwidth
