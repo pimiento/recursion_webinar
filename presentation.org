@@ -91,6 +91,104 @@
   #+RESULTS:
   : 120
 
+* Варианты задач для рекурсии. Сортировка
+  #+NAME: import_sort
+  #+begin_src python :exports none
+    import sys
+    import timeit
+    from typing import List
+  #+end_src
+  #+NAME: running_sort
+  #+BEGIN_SRC python :exports none
+    if __name__ == "__main__":
+        int_count = sys.argv[1]
+        with open(f"data/{int_count}ints.txt", "r") as data:
+            arr: List[int] = [int(line.strip()) for line in data.readlines()]
+            number:int = 2
+            def to_call():
+                return sort_alg(arr)
+            result = timeit.timeit(to_call, number=number)
+            print(
+                f"{number} вызовов для {int_count} данных: лучший результат равен {result:.02f}"
+            )
+            result = sort_alg(arr)
+            for i in range(len(result)-1):
+                assert result[i] < result[i+1]
+  #+END_SRC
+
+  #+begin_src python :exports code :noweb strip-export :tangle quick_sort.py :shebang "#!/usr/bin/env python3"
+    <<import_sort>>
+    def sort_alg(L: List[int]]) -> List:
+        if L:
+            return (
+                sort_alg(
+            [e for e in L[1:] if e<L[0]]
+                ) +
+                L[0:1] +
+                sort_alg(
+            [e for e in L[1:] if e>=L[0]]
+                )
+            )
+        return []
+    <<running_sort>>
+  #+end_src
+* Варианты задач для рекурсии. Графы
+  #+NAME: import_graph
+  #+begin_src python :exports none
+    import networkx as nx
+  #+end_src
+  #+NAME: run_graph_repr
+  #+begin_src python :exports none
+    nx.nx_pydot.to_pydot(G).write_png(fname)
+
+    return fname
+  #+end_src
+  #+NAME: graph_repr
+  #+begin_src python :exports both :results file :noweb strip-export
+    <<import_graph>>
+    fname = "graph.png"
+    G = (
+        nx.internet_as_graphs
+        .random_internet_as_graph(
+            n=50, seed=42
+        )
+    )
+    <<run_graph_repr>>
+  #+end_src
+
+  #+ATTR_LATEX: :width .68\textwidth
+  #+RESULTS: graph_repr
+  [[file:graph.png]]
+* Варианты задач для рекурсии. Графы
+  #+NAME: graph_precode
+  #+begin_src python :exports none
+    import networkx as nx
+
+    G = (
+        nx.internet_as_graphs
+        .random_internet_as_graph(
+            n=50, seed=42
+        )
+        .adj
+    )
+  #+end_src
+  #+NAME: run_dfs
+  #+begin_src python :exports none
+    print(DFS(G, 0))
+  #+end_src
+  #+begin_src python :exports code :tangle dfs_graph.py :shebang "#!/usr/bin/env python3" :noweb strip-export
+    <<graph_precode>>
+    def DFS(G, V, p=None):
+        if p is None:
+            p = []
+        p += [V]
+        for n in G[V]:
+            if n not in p:
+                p = DFS(G, n, p)
+        return p
+    <<run_dfs>>
+  #+end_src
+
 * Вариант задачи для рекурсии
   #+NAME: python_count_change
   #+BEGIN_SRC python :exports none
@@ -190,8 +288,7 @@ in, amount + 1):
 
 #+RESULTS: lisp_count_change
 : 292
-
-* трассирование
+* трассировка
 #+begin_src python :exports code :noweb strip-export :tangle cc.py :shebang "#!/usr/bin/env python3"
   <<python_count_change>>
   def trace(f):
@@ -314,7 +411,7 @@ in, amount + 1):
   #+RESULTS:
   [[file:fibonacci.png]]
 
-* Кэширование
+* Динамическое программирование. Кэширование
   #+BEGIN_SRC python :exports both :results output file :noweb strip-export :tangle "cached_fibonacci.py" :shebang "#!/usr/bin/env python3" :var fname="cached_fibonacci.png"
     cache = {0: 1, 1: 1}
     <<visualiser>>
@@ -499,6 +596,7 @@ in, amount + 1):
     reconstruct_path(a, b, len(a), len(b), m)
   #+END_SRC
 * Дополнительная литература
+  - [[https://habr.com/ru/post/200074/][Графы для самых маленьких: DFS]]
   - [[https://mitpress.mit.edu/sites/default/files/sicp/full-text/book/book.html][SICP]]
 * Вопросы-ответы
   #+ATTR_LATEX: :width .6\textwidth

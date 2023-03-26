@@ -1,28 +1,31 @@
-- [Что такое рекурсия?](#org78a0f29)
-- [Правильная рекурсия](#org1973c12)
-- [Что такое стек вызовов?](#org5af9cc9)
-- [Что такое стек вызовов?](#orgcf60ef7)
-- [Почему рекурсия это плохо](#orgdcea742)
-- [Recursion depth](#org2fc2a6a)
-- [Глубина рекурсии](#orgfc92033)
-- [Почему рекурсия это хорошо](#orgf200652)
-- [Вариант задачи для рекурсии](#org14a814e)
-- [решение на LISP](#org01330b7)
-- [трассирование](#orgc1f1bcc)
-- [Хвостовая рекурсия](#orgc33da5c)
-- [Оптимизация хвостовой рекурсии и почему её нет в Python](#org72f4b55)
-- [Пример когда рекурсия помогает](#org35b494c)
-- [Динамическое программирование](#orgf68f666)
-- [Кэширование](#org93bc601)
-- [Поиск приблизительно совпадающих строк](#org92203e3)
-- [Рекурсивное решение](#org114f1a3)
-- [Динамическое программирование в действии](#org37b4715)
-- [Дополнительная литература](#orgdbf646a)
-- [Вопросы-ответы](#orgfecba0c)
+- [Что такое рекурсия?](#org881fa9b)
+- [Правильная рекурсия](#orgeee7545)
+- [Что такое стек вызовов?](#orgdd88ada)
+- [Что такое стек вызовов?](#org1576f9f)
+- [Почему рекурсия это плохо](#orga87ea64)
+- [Recursion depth](#org52484e1)
+- [Глубина рекурсии](#org22382d3)
+- [Почему рекурсия это хорошо](#org821130e)
+- [Варианты задач для рекурсии. Сортировка](#org7b410da)
+- [Варианты задач для рекурсии. Графы](#orgabea9c4)
+- [Варианты задач для рекурсии. Графы](#org51d8fcc)
+- [Вариант задачи для рекурсии](#orgb5c8ab9)
+- [решение на LISP](#org3135003)
+- [трассировка](#org3047eca)
+- [Хвостовая рекурсия](#org9736ed5)
+- [Оптимизация хвостовой рекурсии и почему её нет в Python](#org3e563ea)
+- [Пример когда рекурсия помогает](#orgcb7fac9)
+- [Динамическое программирование](#org866a89b)
+- [Динамическое программирование. Кэширование](#orgec07fc9)
+- [Поиск приблизительно совпадающих строк](#org219a18d)
+- [Рекурсивное решение](#org06effba)
+- [Динамическое программирование в действии](#org77bbf42)
+- [Дополнительная литература](#org19b00be)
+- [Вопросы-ответы](#org3ec8414)
 
 
 
-<a id="org78a0f29"></a>
+<a id="org881fa9b"></a>
 
 # Что такое рекурсия?
 
@@ -39,7 +42,7 @@ def pow(x, n):
 ```
 
 
-<a id="org1973c12"></a>
+<a id="orgeee7545"></a>
 
 # Правильная рекурсия
 
@@ -56,7 +59,7 @@ def pow(x, n):
 ```
 
 
-<a id="org5af9cc9"></a>
+<a id="orgdd88ada"></a>
 
 # Что такое стек вызовов?
 
@@ -73,14 +76,14 @@ if __name__ == '__main__':
 ```
 
 
-<a id="orgcf60ef7"></a>
+<a id="org1576f9f"></a>
 
 # Что такое стек вызовов?
 
 ![img](/home/pimiento/yap/callstack.png)  
 
 
-<a id="orgdcea742"></a>
+<a id="orga87ea64"></a>
 
 # Почему рекурсия это плохо
 
@@ -88,7 +91,7 @@ if __name__ == '__main__':
 -   можно попасть в бесконечную рекурсию и истратить всю память на стек вызовов
 
 
-<a id="org2fc2a6a"></a>
+<a id="org52484e1"></a>
 
 # Recursion depth
 
@@ -100,7 +103,7 @@ inf_counter(0)
 ```
 
 
-<a id="orgfc92033"></a>
+<a id="org22382d3"></a>
 
 # Глубина рекурсии
 
@@ -118,7 +121,7 @@ print(sys.getrecursionlimit())
     1234
 
 
-<a id="orgf200652"></a>
+<a id="org821130e"></a>
 
 # Почему рекурсия это хорошо
 
@@ -137,14 +140,73 @@ print(factorial(5))
     120
 
 
-<a id="org14a814e"></a>
+<a id="org7b410da"></a>
+
+# Варианты задач для рекурсии. Сортировка
+
+```python
+
+def sort_alg(L: List[int]]) -> List:
+    if L:
+        return (
+            sort_alg(
+        [e for e in L[1:] if e<L[0]]
+            ) +
+            L[0:1] +
+            sort_alg(
+        [e for e in L[1:] if e>=L[0]]
+            )
+        )
+    return []
+
+```
+
+
+<a id="orgabea9c4"></a>
+
+# Варианты задач для рекурсии. Графы
+
+```python
+
+fname = "graph.png"
+G = (
+    nx.internet_as_graphs
+    .random_internet_as_graph(
+        n=50, seed=42
+    )
+)
+
+```
+
+![img](graph.png)  
+
+
+<a id="org51d8fcc"></a>
+
+# Варианты задач для рекурсии. Графы
+
+```python
+
+def DFS(G, V, p=None):
+    if p is None:
+        p = []
+    p += [V]
+    for n in G[V]:
+        if n not in p:
+            p = DFS(G, n, p)
+    return p
+
+```
+
+
+<a id="orgb5c8ab9"></a>
 
 # Вариант задачи для рекурсии
 
 Попробуйте реализовать решение <span class="underline"><span class="underline">[этой задачи](https://github.com/pimiento/recursion_webinar/blob/master/cc.py)</span></span> без использования рекурсии \Winkey[][green!60!white]  
 
 
-<a id="org01330b7"></a>
+<a id="org3135003"></a>
 
 # решение на LISP
 
@@ -153,9 +215,9 @@ print(factorial(5))
 ![img](count-change-lisp.png)  
 
 
-<a id="orgc1f1bcc"></a>
+<a id="org3047eca"></a>
 
-# трассирование
+# трассировка
 
 ```python
 
@@ -177,7 +239,7 @@ count_change(10)
 ```
 
 
-<a id="orgc33da5c"></a>
+<a id="org9736ed5"></a>
 
 # Хвостовая рекурсия
 
@@ -195,7 +257,7 @@ print(factorial(5))
     120
 
 
-<a id="org72f4b55"></a>
+<a id="org3e563ea"></a>
 
 # Оптимизация хвостовой рекурсии и почему её нет в Python
 
@@ -203,7 +265,7 @@ print(factorial(5))
 -   <span class="underline"><span class="underline">[Почему TCO нет и не будет в Python](https://neopythonic.blogspot.com/2009/04/final-words-on-tail-calls.html)</span></span>
 
 
-<a id="org35b494c"></a>
+<a id="orgcb7fac9"></a>
 
 # Пример когда рекурсия помогает
 
@@ -211,7 +273,7 @@ print(factorial(5))
 -   **Решение задачи:** <https://github.com/pimiento/recursion_webinar/blob/master/recursion_example.py>
 
 
-<a id="orgf68f666"></a>
+<a id="org866a89b"></a>
 
 # Динамическое программирование
 
@@ -229,9 +291,9 @@ def fib(n):
 ![img](fibonacci.png)  
 
 
-<a id="org93bc601"></a>
+<a id="orgec07fc9"></a>
 
-# Кэширование
+# Динамическое программирование. Кэширование
 
 ```python
 cache = {0: 1, 1: 1}
@@ -247,7 +309,7 @@ def fib(n):
 ![img](cached_fibonacci.png)  
 
 
-<a id="org92203e3"></a>
+<a id="org219a18d"></a>
 
 # Поиск приблизительно совпадающих строк
 
@@ -258,7 +320,7 @@ def fib(n):
 -   ***удаление*:** удалить один символ в строке A1 так чтобы она совпала с подстрокой A2. ("гроза" → "роза")
 
 
-<a id="org114f1a3"></a>
+<a id="org06effba"></a>
 
 # Рекурсивное решение
 
@@ -280,7 +342,7 @@ print(lev("halt", "salt"))
     - 1
 
 
-<a id="org37b4715"></a>
+<a id="org77bbf42"></a>
 
 # Динамическое программирование в действии
 
@@ -299,14 +361,15 @@ def levenshtein(
 ```
 
 
-<a id="orgdbf646a"></a>
+<a id="org19b00be"></a>
 
 # Дополнительная литература
 
+-   [Графы для самых маленьких: DFS](https://habr.com/ru/post/200074/)
 -   [SICP](https://mitpress.mit.edu/sites/default/files/sicp/full-text/book/book.html)
 
 
-<a id="orgfecba0c"></a>
+<a id="org3ec8414"></a>
 
 # Вопросы-ответы
 
