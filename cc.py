@@ -52,6 +52,11 @@ def count_change(amount):
 
 
 count_change(100)
+
+
+
+
+### Tracing
 def trace(f):
   indent = 0
   def g(*args, **kwargs):
